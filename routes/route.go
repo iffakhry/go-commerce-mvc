@@ -20,18 +20,25 @@ func InitRoute(e *echo.Echo, db *gorm.DB) {
 
 	userRepo := repository.NewUserRepository(db)
 	userController := controller.NewUserController(userRepo)
-	e.POST("/login", userController.Login)
+	api := e.Group("/api")
+	apiV1 := api.Group("/v1")
 
-	e.GET("/profile", userController.GetProfile, middlewares.JWTMiddleware())
-	e.GET("/users", userController.GetAllUser, middlewares.JWTMiddleware())
-	e.POST("/users", userController.CreateUser)
-	e.PUT("/users", userController.Update, middlewares.JWTMiddleware())
-	e.DELETE("/users", userController.Delete, middlewares.JWTMiddleware())
+	apiV1.POST("/login", userController.Login)
 
-	// e.POST("/users/alamat", controllers.AddUserAlamatController)
+	apiV1.GET("/profile", userController.GetProfile, middlewares.JWTMiddleware())
+	apiV1.GET("/users", userController.GetAllUser, middlewares.JWTMiddleware())
+	apiV1.POST("/users", userController.CreateUser)
+	apiV1.PUT("/users", userController.Update, middlewares.JWTMiddleware())
+	apiV1.DELETE("/users", userController.Delete, middlewares.JWTMiddleware())
 
-	// product := e.Group("/products", middlewares.JWTMiddleware())
-	// product.GET("", controllers.GetProductController)
-	// product.POST("", controllers.AddProductController)
+	productV1 := apiV1.Group("/products")
+
+	productRepo := repository.NewProductRepository(db)
+	productController := controller.NewProductController(productRepo)
+	productV1.POST("", productController.Create, middlewares.JWTMiddleware())
+	productV1.GET("", productController.GetAll)
+	productV1.GET("/:id", productController.GetById)
+	productV1.PUT("/:id", productController.Update, middlewares.JWTMiddleware())
+	productV1.DELETE("/:id", productController.Delete, middlewares.JWTMiddleware())
 	// return e
 }

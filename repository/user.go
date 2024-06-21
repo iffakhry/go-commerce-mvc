@@ -21,36 +21,6 @@ func NewUserRepository(db *gorm.DB) UserRepository {
 	}
 }
 
-// mapping dari Entity ke model
-func EntityToModel(dataEntity entity.User) models.User {
-	return models.User{
-		Email:    dataEntity.Email,
-		Password: dataEntity.Password,
-		Name:     dataEntity.Name,
-		Role:     dataEntity.Role,
-	}
-}
-
-func ModelToEntity(dataModel models.User) entity.User {
-	return entity.User{
-		Id:        dataModel.ID,
-		Email:     dataModel.Email,
-		Password:  dataModel.Password,
-		Name:      dataModel.Name,
-		Role:      dataModel.Role,
-		CreatedAt: dataModel.CreatedAt,
-		UpdatedAt: dataModel.UpdatedAt,
-	}
-}
-
-func ModelToEntityList(dataModel []models.User) []entity.User {
-	var coreList []entity.User
-	for _, v := range dataModel {
-		coreList = append(coreList, ModelToEntity(v))
-	}
-	return coreList
-}
-
 func (repo *UserRepository) Insert(input entity.User) error {
 	// mapping dari struct entities core ke gorm model
 	// userInputGorm := User{
@@ -63,7 +33,7 @@ func (repo *UserRepository) Insert(input entity.User) error {
 	if errHash != nil {
 		return errors.New("error hash password")
 	}
-	userInputGorm := EntityToModel(input)
+	userInputGorm := models.UserEntityToModel(input)
 	userInputGorm.Password = hashedPassword
 
 	tx := repo.db.Create(&userInputGorm) // insert into users set name = .....
@@ -86,7 +56,7 @@ func (repo *UserRepository) SelectAll() ([]entity.User, error) {
 	}
 	fmt.Println(usersData)
 	// mapping dari struct gorm model ke struct entities core
-	var usersCoreAll []entity.User = ModelToEntityList(usersData)
+	var usersCoreAll []entity.User = models.UserModelToEntityList(usersData)
 	// for _, value := range usersData {
 	// 	var userCore = user.Core{
 	// 		Id:        value.ID,
@@ -109,7 +79,7 @@ func (repo *UserRepository) SelectById(id int) (entity.User, error) {
 		return entity.User{}, tx.Error
 	}
 	// mapping dari struct gorm model ke struct entities core
-	var usersCore = ModelToEntity(usersData)
+	var usersCore = models.UserModelToEntity(usersData)
 	fmt.Println(usersCore)
 
 	return usersCore, nil
@@ -124,7 +94,7 @@ func (repo *UserRepository) Update(id int, input entity.User) (data entity.User,
 		input.Password = hashedPassword
 	}
 
-	tx := repo.db.Model(&models.User{}).Where("id = ?", id).Updates(EntityToModel(input))
+	tx := repo.db.Model(&models.User{}).Where("id = ?", id).Updates(models.UserEntityToModel(input))
 	if tx.Error != nil {
 		return data, tx.Error
 	}
@@ -136,7 +106,7 @@ func (repo *UserRepository) Update(id int, input entity.User) (data entity.User,
 	if resultFind.Error != nil {
 		return entity.User{}, resultFind.Error
 	}
-	data = ModelToEntity(usersData)
+	data = models.UserModelToEntity(usersData)
 	return data, nil
 }
 
@@ -172,6 +142,6 @@ func (repo *UserRepository) Login(email string, password string) (entity.User, s
 		return entity.User{}, "", errToken
 	}
 
-	dataCore := ModelToEntity(userGorm)
+	dataCore := models.UserModelToEntity(userGorm)
 	return dataCore, token, nil
 }
