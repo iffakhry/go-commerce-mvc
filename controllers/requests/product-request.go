@@ -1,6 +1,6 @@
 package requests
 
-import "github.com/iffakhry/go-commerce-mvc/entity"
+import "github.com/iffakhry/go-commerce-mvc/entities"
 
 type ProductRequest struct {
 	UserID      uint    `json:"user_id" form:"user_id"`
@@ -10,8 +10,8 @@ type ProductRequest struct {
 	Description string  `json:"description" form:"description"`
 }
 
-func ProductRequestToEntity(dataRequest ProductRequest) entity.Product {
-	return entity.Product{
+func ProductRequestToEntity(dataRequest ProductRequest) entities.Product {
+	return entities.Product{
 		UserID:      dataRequest.UserID,
 		Name:        dataRequest.Name,
 		Price:       dataRequest.Price,

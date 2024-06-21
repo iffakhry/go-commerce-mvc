@@ -1,10 +1,10 @@
-package repository
+package repositories
 
 import (
 	"errors"
 	"fmt"
 
-	"github.com/iffakhry/go-commerce-mvc/entity"
+	"github.com/iffakhry/go-commerce-mvc/entities"
 	"github.com/iffakhry/go-commerce-mvc/models"
 	"github.com/iffakhry/go-commerce-mvc/pkg"
 	"github.com/iffakhry/go-commerce-mvc/pkg/middlewares"
@@ -21,7 +21,7 @@ func NewUserRepository(db *gorm.DB) UserRepository {
 	}
 }
 
-func (repo *UserRepository) Insert(input entity.User) error {
+func (repo *UserRepository) Insert(input entities.User) error {
 	// mapping dari struct entities core ke gorm model
 	// userInputGorm := User{
 	// 	Name:     input.Name,
@@ -48,7 +48,7 @@ func (repo *UserRepository) Insert(input entity.User) error {
 	return nil
 }
 
-func (repo *UserRepository) SelectAll() ([]entity.User, error) {
+func (repo *UserRepository) SelectAll() ([]entities.User, error) {
 	var usersData []models.User
 	tx := repo.db.Find(&usersData) // select * from users
 	if tx.Error != nil {
@@ -56,7 +56,7 @@ func (repo *UserRepository) SelectAll() ([]entity.User, error) {
 	}
 	fmt.Println(usersData)
 	// mapping dari struct gorm model ke struct entities core
-	var usersCoreAll []entity.User = models.UserModelToEntityList(usersData)
+	var usersCoreAll []entities.User = models.UserModelToEntityList(usersData)
 	// for _, value := range usersData {
 	// 	var userCore = user.Core{
 	// 		Id:        value.ID,
@@ -72,11 +72,11 @@ func (repo *UserRepository) SelectAll() ([]entity.User, error) {
 	return usersCoreAll, nil
 }
 
-func (repo *UserRepository) SelectById(id int) (entity.User, error) {
+func (repo *UserRepository) SelectById(id int) (entities.User, error) {
 	var usersData models.User
-	tx := repo.db.First(&usersData) // select * from users
+	tx := repo.db.First(&usersData, id) // select * from users where id = id
 	if tx.Error != nil {
-		return entity.User{}, tx.Error
+		return entities.User{}, tx.Error
 	}
 	// mapping dari struct gorm model ke struct entities core
 	var usersCore = models.UserModelToEntity(usersData)
@@ -85,11 +85,11 @@ func (repo *UserRepository) SelectById(id int) (entity.User, error) {
 	return usersCore, nil
 }
 
-func (repo *UserRepository) Update(id int, input entity.User) (data entity.User, err error) {
+func (repo *UserRepository) Update(id int, input entities.User) (data entities.User, err error) {
 	if input.Password != "" {
 		hashedPassword, errHash := pkg.HashPassword(input.Password)
 		if errHash != nil {
-			return entity.User{}, errors.New("error hash password")
+			return entities.User{}, errors.New("error hash password")
 		}
 		input.Password = hashedPassword
 	}
@@ -104,7 +104,7 @@ func (repo *UserRepository) Update(id int, input entity.User) (data entity.User,
 	var usersData models.User
 	resultFind := repo.db.Find(&usersData, id)
 	if resultFind.Error != nil {
-		return entity.User{}, resultFind.Error
+		return entities.User{}, resultFind.Error
 	}
 	data = models.UserModelToEntity(usersData)
 	return data, nil
@@ -121,25 +121,25 @@ func (repo *UserRepository) Delete(id int) (row int, err error) {
 	return int(result.RowsAffected), nil
 }
 
-func (repo *UserRepository) Login(email string, password string) (entity.User, string, error) {
+func (repo *UserRepository) Login(email string, password string) (entities.User, string, error) {
 	var userGorm models.User
 	tx := repo.db.Where("email = ?", email).First(&userGorm) // select * from users limit 1
 	if tx.Error != nil {
-		return entity.User{}, "", tx.Error
+		return entities.User{}, "", tx.Error
 	}
 
 	if tx.RowsAffected == 0 {
-		return entity.User{}, "", errors.New("login failed, email dan password salah")
+		return entities.User{}, "", errors.New("login failed, email dan password salah")
 	}
 
 	checkPassword := pkg.CheckPasswordHash(password, userGorm.Password)
 	if !checkPassword {
-		return entity.User{}, "", errors.New("login failed, password salah")
+		return entities.User{}, "", errors.New("login failed, password salah")
 	}
 
 	token, errToken := middlewares.CreateToken(int(userGorm.ID))
 	if errToken != nil {
-		return entity.User{}, "", errToken
+		return entities.User{}, "", errToken
 	}
 
 	dataCore := models.UserModelToEntity(userGorm)

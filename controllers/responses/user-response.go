@@ -3,7 +3,7 @@ package responses
 import (
 	"time"
 
-	"github.com/iffakhry/go-commerce-mvc/entity"
+	"github.com/iffakhry/go-commerce-mvc/entities"
 )
 
 type UserResponse struct {
@@ -14,7 +14,7 @@ type UserResponse struct {
 	CreatedAt time.Time `json:"created_at"`
 }
 
-func UserEntityToResponse(dataCore entity.User) UserResponse {
+func UserEntityToResponse(dataCore entities.User) UserResponse {
 	return UserResponse{
 		Id:        dataCore.Id,
 		Name:      dataCore.Name,
@@ -24,7 +24,7 @@ func UserEntityToResponse(dataCore entity.User) UserResponse {
 	}
 }
 
-func UserEntityToResponseList(dataCore []entity.User) []UserResponse {
+func UserEntityToResponseList(dataCore []entities.User) []UserResponse {
 	var result []UserResponse
 	for _, v := range dataCore {
 		result = append(result, UserEntityToResponse(v))

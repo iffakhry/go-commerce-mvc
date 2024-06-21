@@ -1,10 +1,10 @@
-package repository
+package repositories
 
 import (
 	"errors"
 	"fmt"
 
-	"github.com/iffakhry/go-commerce-mvc/entity"
+	"github.com/iffakhry/go-commerce-mvc/entities"
 	"github.com/iffakhry/go-commerce-mvc/models"
 	"gorm.io/gorm"
 )
@@ -19,7 +19,7 @@ func NewProductRepository(db *gorm.DB) ProductRepository {
 	}
 }
 
-func (repo *ProductRepository) Insert(input entity.Product) error {
+func (repo *ProductRepository) Insert(input entities.Product) error {
 	// mapping dari struct entities core ke gorm model
 	// userInputGorm := User{
 	// 	Name:     input.Name,
@@ -41,7 +41,7 @@ func (repo *ProductRepository) Insert(input entity.Product) error {
 	return nil
 }
 
-func (repo *ProductRepository) SelectAll() ([]entity.Product, error) {
+func (repo *ProductRepository) SelectAll() ([]entities.Product, error) {
 	var datas []models.Product
 	tx := repo.db.Preload("User").Find(&datas) // select * from users
 	if tx.Error != nil {
@@ -49,7 +49,7 @@ func (repo *ProductRepository) SelectAll() ([]entity.Product, error) {
 	}
 	fmt.Println(datas)
 	// mapping dari struct gorm model ke struct entities core
-	var datasEntityAll []entity.Product = models.ProductModelToEntityList(datas)
+	var datasEntityAll []entities.Product = models.ProductModelToEntityList(datas)
 	// for _, value := range usersData {
 	// 	var userCore = user.Core{
 	// 		Id:        value.ID,
@@ -65,11 +65,11 @@ func (repo *ProductRepository) SelectAll() ([]entity.Product, error) {
 	return datasEntityAll, nil
 }
 
-func (repo *ProductRepository) SelectById(id int) (entity.Product, error) {
+func (repo *ProductRepository) SelectById(id int) (entities.Product, error) {
 	var datas models.Product
-	tx := repo.db.Preload("User").First(&datas) // select * from users
+	tx := repo.db.Preload("User").First(&datas, id) // select * from users where id = id
 	if tx.Error != nil {
-		return entity.Product{}, tx.Error
+		return entities.Product{}, tx.Error
 	}
 	// mapping dari struct gorm model ke struct entities core
 	var core = models.ProductModelToEntity(datas)
@@ -78,7 +78,7 @@ func (repo *ProductRepository) SelectById(id int) (entity.Product, error) {
 	return core, nil
 }
 
-func (repo *ProductRepository) Update(id int, input entity.Product) (data entity.Product, err error) {
+func (repo *ProductRepository) Update(id int, input entities.Product) (data entities.Product, err error) {
 
 	tx := repo.db.Model(&models.Product{}).Where("id = ?", id).Updates(models.ProductEntityToModel(input))
 	if tx.Error != nil {
@@ -90,7 +90,7 @@ func (repo *ProductRepository) Update(id int, input entity.Product) (data entity
 	var dataModel models.Product
 	resultFind := repo.db.Preload("User").Find(&dataModel, id)
 	if resultFind.Error != nil {
-		return entity.Product{}, resultFind.Error
+		return entities.Product{}, resultFind.Error
 	}
 	data = models.ProductModelToEntity(dataModel)
 	return data, nil

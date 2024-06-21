@@ -1,24 +1,24 @@
-package controller
+package controllers
 
 import (
 	"net/http"
 	"strconv"
 	"strings"
 
-	"github.com/iffakhry/go-commerce-mvc/controller/requests"
-	"github.com/iffakhry/go-commerce-mvc/controller/responses"
-	"github.com/iffakhry/go-commerce-mvc/entity"
+	"github.com/iffakhry/go-commerce-mvc/controllers/requests"
+	"github.com/iffakhry/go-commerce-mvc/controllers/responses"
+	"github.com/iffakhry/go-commerce-mvc/entities"
 	"github.com/iffakhry/go-commerce-mvc/pkg"
 	"github.com/iffakhry/go-commerce-mvc/pkg/middlewares"
-	"github.com/iffakhry/go-commerce-mvc/repository"
+	"github.com/iffakhry/go-commerce-mvc/repositories"
 	"github.com/labstack/echo/v4"
 )
 
 type ProductController struct {
-	productRepo repository.ProductRepository
+	productRepo repositories.ProductRepository
 }
 
-func NewProductController(repo repository.ProductRepository) *ProductController {
+func NewProductController(repo repositories.ProductRepository) *ProductController {
 	return &ProductController{
 		productRepo: repo,
 	}
@@ -37,7 +37,7 @@ func (cp *ProductController) Create(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, pkg.FailedResponse("error bind data"))
 	}
 	// mapping dari request ke core
-	entityData := entity.Product{
+	entityData := entities.Product{
 		UserID:      uint(idToken), // ambil user id dari token yang login
 		Name:        dataInput.Name,
 		Price:       dataInput.Price,

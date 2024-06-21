@@ -1,9 +1,9 @@
 package routes
 
 import (
-	"github.com/iffakhry/go-commerce-mvc/controller"
+	"github.com/iffakhry/go-commerce-mvc/controllers"
 	"github.com/iffakhry/go-commerce-mvc/pkg/middlewares"
-	"github.com/iffakhry/go-commerce-mvc/repository"
+	"github.com/iffakhry/go-commerce-mvc/repositories"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"gorm.io/gorm"
@@ -18,8 +18,8 @@ func InitRoute(e *echo.Echo, db *gorm.DB) {
 		Format: "[${time_rfc3339}] status=${status} method=${method} uri=${uri} latency=${latency_human} \n",
 	}))
 
-	userRepo := repository.NewUserRepository(db)
-	userController := controller.NewUserController(userRepo)
+	userRepo := repositories.NewUserRepository(db)
+	userController := controllers.NewUserController(userRepo)
 	api := e.Group("/api")
 	apiV1 := api.Group("/v1")
 
@@ -33,8 +33,8 @@ func InitRoute(e *echo.Echo, db *gorm.DB) {
 
 	productV1 := apiV1.Group("/products")
 
-	productRepo := repository.NewProductRepository(db)
-	productController := controller.NewProductController(productRepo)
+	productRepo := repositories.NewProductRepository(db)
+	productController := controllers.NewProductController(productRepo)
 	productV1.POST("", productController.Create, middlewares.JWTMiddleware())
 	productV1.GET("", productController.GetAll)
 	productV1.GET("/:id", productController.GetById)

@@ -1,23 +1,23 @@
-package controller
+package controllers
 
 import (
 	"net/http"
 	"strings"
 
-	"github.com/iffakhry/go-commerce-mvc/controller/requests"
-	"github.com/iffakhry/go-commerce-mvc/controller/responses"
-	"github.com/iffakhry/go-commerce-mvc/entity"
+	"github.com/iffakhry/go-commerce-mvc/controllers/requests"
+	"github.com/iffakhry/go-commerce-mvc/controllers/responses"
+	"github.com/iffakhry/go-commerce-mvc/entities"
 	"github.com/iffakhry/go-commerce-mvc/pkg"
 	"github.com/iffakhry/go-commerce-mvc/pkg/middlewares"
-	"github.com/iffakhry/go-commerce-mvc/repository"
+	"github.com/iffakhry/go-commerce-mvc/repositories"
 	"github.com/labstack/echo/v4"
 )
 
 type UserController struct {
-	userRepo repository.UserRepository
+	userRepo repositories.UserRepository
 }
 
-func NewUserController(repo repository.UserRepository) *UserController {
+func NewUserController(repo repositories.UserRepository) *UserController {
 	return &UserController{
 		userRepo: repo,
 	}
@@ -31,7 +31,7 @@ func (cuser *UserController) CreateUser(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, pkg.FailedResponse("error bind data"))
 	}
 	// mapping dari request ke core
-	userCore := entity.User{
+	userCore := entities.User{
 		Email:    userInput.Email,
 		Password: userInput.Password,
 		Name:     userInput.Name,

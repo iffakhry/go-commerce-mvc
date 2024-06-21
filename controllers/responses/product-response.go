@@ -3,7 +3,7 @@ package responses
 import (
 	"time"
 
-	"github.com/iffakhry/go-commerce-mvc/entity"
+	"github.com/iffakhry/go-commerce-mvc/entities"
 )
 
 type ProductResponse struct {
@@ -18,7 +18,7 @@ type ProductResponse struct {
 	UpdatedAt   time.Time    `json:"updated_at"`
 }
 
-func ProductEntityToResponse(dataCore entity.Product) ProductResponse {
+func ProductEntityToResponse(dataCore entities.Product) ProductResponse {
 	return ProductResponse{
 		Id:          dataCore.Id,
 		UserID:      dataCore.UserID,
@@ -32,7 +32,7 @@ func ProductEntityToResponse(dataCore entity.Product) ProductResponse {
 	}
 }
 
-func ProductEntityToResponseList(dataCore []entity.Product) []ProductResponse {
+func ProductEntityToResponseList(dataCore []entities.Product) []ProductResponse {
 	var result []ProductResponse
 	for _, v := range dataCore {
 		result = append(result, ProductEntityToResponse(v))

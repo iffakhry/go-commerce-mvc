@@ -1,7 +1,7 @@
 package models
 
 import (
-	"github.com/iffakhry/go-commerce-mvc/entity"
+	"github.com/iffakhry/go-commerce-mvc/entities"
 	"gorm.io/gorm"
 )
 
@@ -16,7 +16,7 @@ type Product struct {
 }
 
 // mapping dari Entity ke model
-func ProductEntityToModel(dataEntity entity.Product) Product {
+func ProductEntityToModel(dataEntity entities.Product) Product {
 	return Product{
 		UserID:      dataEntity.UserID,
 		Name:        dataEntity.Name,
@@ -27,8 +27,8 @@ func ProductEntityToModel(dataEntity entity.Product) Product {
 	}
 }
 
-func ProductModelToEntity(dataModel Product) entity.Product {
-	return entity.Product{
+func ProductModelToEntity(dataModel Product) entities.Product {
+	return entities.Product{
 		Id:          dataModel.ID,
 		UserID:      dataModel.UserID,
 		Name:        dataModel.Name,
@@ -41,8 +41,8 @@ func ProductModelToEntity(dataModel Product) entity.Product {
 	}
 }
 
-func ProductModelToEntityList(dataModel []Product) []entity.Product {
-	var coreList []entity.Product
+func ProductModelToEntityList(dataModel []Product) []entities.Product {
+	var coreList []entities.Product
 	for _, v := range dataModel {
 		coreList = append(coreList, ProductModelToEntity(v))
 	}

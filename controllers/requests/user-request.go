@@ -1,6 +1,6 @@
 package requests
 
-import "github.com/iffakhry/go-commerce-mvc/entity"
+import "github.com/iffakhry/go-commerce-mvc/entities"
 
 type UserRequest struct {
 	Email    string `json:"email" form:"email"`
@@ -9,8 +9,8 @@ type UserRequest struct {
 	Role     string `json:"role" form:"role"`
 }
 
-func UserRequestToEntity(dataRequest UserRequest) entity.User {
-	return entity.User{
+func UserRequestToEntity(dataRequest UserRequest) entities.User {
+	return entities.User{
 		Email:    dataRequest.Email,
 		Password: dataRequest.Password,
 		Name:     dataRequest.Name,
