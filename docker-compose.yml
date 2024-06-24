@@ -28,7 +28,7 @@ services:
     depends_on: 
       - postgres # This service depends on redis. Start that first.
     environment: # Pass environment variables to the service
-      DBHOST: postgres
+      DBHOST: postgres #service name
       DBUSER: postgres
       DBPASS: qwerty123
       DBNAME: db_commerce

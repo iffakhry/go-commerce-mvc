@@ -60,3 +60,24 @@ ketika aplikasi sudah berjalan, API documentation (swagger) bisa diakses di alam
     ```
     http://localhost:8080/swagger/index.html/
     ```
+
+## Install swaggo
+1. Download zip/tar.gz file executable swaggo dari `https://github.com/swaggo/swag/releases`
+2. extract file tersebut
+3. letakkan di folder tersendiri
+4. tambahkan ke environment path
+    * macOS
+        - buka `nano ~/.zshrc`
+        - tambahkan diakhir tersendiri `alias swag=~/swaggo/swag`
+        - note: sesuaikan dengan direktori tempat file hasil extract tadi berada
+
+## Generate swagger using swaggo
+* ketika file `main.go` berada di root folder, maka langsung jalankan perintah:
+    ```bash
+    swag init
+    ```
+
+* ketika file `main.go` berada di subfolder, maka jalankan perintah:
+    ```bash
+    swag init -g ./cmd/httpserver/main.go -o ./docs
+    ```
