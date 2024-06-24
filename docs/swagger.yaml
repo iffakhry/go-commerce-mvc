@@ -1,0 +1,67 @@
+basePath: /api/v1
+definitions:
+  entities.User:
+    properties:
+      createdAt:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      password:
+        type: string
+      role:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  requests.UserRequest:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+      role:
+        type: string
+    type: object
+host: http://localhost:8080
+info:
+  contact:
+    email: fakhry@alterra.id
+    name: Fakhry Firdaus
+    url: http://academy.alterra.id
+  description: This is API documentation for Go-Commerce.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Go-Commerce API
+  version: "1.0"
+paths:
+  /users:
+    post:
+      consumes:
+      - application/json
+      description: register users
+      parameters:
+      - description: data user
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/requests.UserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entities.User'
+      summary: register users
+      tags:
+      - users
+swagger: "2.0"

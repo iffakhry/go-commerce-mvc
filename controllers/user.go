@@ -23,6 +23,15 @@ func NewUserController(repo repositories.UserRepository) *UserController {
 	}
 }
 
+// Register godoc
+// @Summary      register users
+// @Description  register users
+// @Tags         users
+// @Accept       json
+// @Produce      json
+// @Param        request    body    requests.UserRequest  true  "data user"
+// @Success      200  {object}   entities.User
+// @Router       /users [post]
 func (cuser *UserController) CreateUser(c echo.Context) error {
 	userInput := requests.UserRequest{}
 	// bind, membaca data yg dikirimkan client via request body
